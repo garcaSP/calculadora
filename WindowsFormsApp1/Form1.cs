@@ -12,6 +12,7 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        public double resultado = 0;
         public Form1()
         {
             InitializeComponent();
@@ -26,47 +27,41 @@ namespace WindowsFormsApp1
         private void btSoma_Click(object sender, EventArgs e)
         {
             AtrOperador(btSoma.Text);
-            TravarBotao();
+            TravarDiv();
         }
 
         private void btSub_Click(object sender, EventArgs e)
         {
             AtrOperador(btSub.Text);
-            TravarBotao();
+            TravarDiv();
         }
 
         private void btMult_Click(object sender, EventArgs e)
         {
             AtrOperador(btMult.Text);
-            TravarBotao();
+            TravarDiv();
         }
 
         private void btDiv_Click(object sender, EventArgs e)
         {
             AtrOperador(btDiv.Text);
-            TravarBotao();
+            TravarDiv();
         }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
-            cominJS.Visible = true;
-            Point comin = new Point(-123, -8);
-            cominJS.Location = comin;
-        }
-
-        void TravarBotao()
+        void TravarDiv()
         {
             btIgual.Enabled = !(lblOpr.Text == "..." || (lblOpr.Text == btDiv.Text && numOpr2.Value == 0));
         }
-        void ChecaMeia(double resu)
-        { 
-            if(numOpr2.Value == 69 || numOpr1.Value == 69 || resu == 69)
-                pictureBox7.Visible = true;
-        }
 
+        private bool TravarSegue()
+        {
+            bool lt = !(lblResultado.Text == "...");
+            btSegue.Enabled = lt;
+            return lt;
+        }
         private void btIgual_Click(object sender, EventArgs e)
         {
-            double num1, num2, resultado = 0;
+            double num1, num2 = 0;
             num1 = (double)numOpr1.Value;
             num2 = (double)numOpr2.Value;
 
@@ -79,19 +74,40 @@ namespace WindowsFormsApp1
             else if (lblOpr.Text == btDiv.Text)
                 resultado = num1 / num2;
             else
-                lblResultado.Text = "Erro";
-            ChecaMeia(resultado);
-                lblResultado.Text = resultado.ToString();
+            {
+                return;
+            }
+
+            lblResultado.Text = resultado.ToString("");
+            TravarSegue();
         }
 
         private void numOpr2_ValueChanged(object sender, EventArgs e)
         {
-            TravarBotao();
+            TravarDiv();
+            TravarSegue();
         }
 
         private void numOpr1_ValueChanged(object sender, EventArgs e)
         {
-            TravarBotao();
+            TravarDiv();
+            TravarSegue();
+        }
+
+        private void btSegue_Click(object sender, EventArgs e)
+        {
+            if(TravarSegue() == false)
+                return;
+                numOpr1.Value = (decimal)resultado;
+        }
+
+        private void btLimpa_Click(object sender, EventArgs e)
+        {
+            numOpr1.Value = 0;
+            numOpr2.Value = 0;
+            lblOpr.Text = "...";
+            lblResultado.Text = "...";
+            TravarSegue();
         }
     }
 }
